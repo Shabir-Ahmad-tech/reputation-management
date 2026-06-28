@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Experience Feedback</title>
+  <!-- Google Fonts: Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Reset & Base Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f8fafc;
+      background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+      background-size: 28px 28px;
+      color: #0f172a;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* Main Card Container */
+    .card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 460px;
+      border-radius: 28px;
+      padding: 44px 36px;
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.03);
+      text-align: center;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Business Branding Section */
+    .brand-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .brand-logo-wrapper {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 16px -4px rgba(59, 130, 246, 0.15);
+      border: 2px solid #ffffff;
+      overflow: hidden;
+    }
+
+    .brand-logo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .brand-logo-fallback {
+      width: 36px;
+      height: 36px;
+      color: #2563eb;
+    }
+
+    .brand-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #64748b;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    /* Headlines */
+    .headline {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 8px;
+      line-height: 1.25;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .subheadline {
+      font-size: 0.95rem;
+      color: #64748b;
+      margin-bottom: 32px;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+
+    /* Interactive Sentiment Faces Component */
+    .faces-wrapper {
+      transition: opacity 0.35s ease, transform 0.35s ease, max-height 0.4s ease, margin 0.4s ease;
+      max-height: 140px;
+      opacity: 1;
+    }
+
+    .faces-wrapper.hidden {
+      opacity: 0;
+      transform: translateY(-15px);
+      max-height: 0;
+      margin: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .faces-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .face-btn {
+      background: #f8fafc;
+      border: 2px solid #f1f5f9;
+      border-radius: 20px;
+      padding: 12px 6px;
+      cursor: pointer;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      outline: none;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .face-btn:hover {
+      transform: translateY(-6px) scale(1.06);
+      background: #ffffff;
+      border-color: var(--theme-color);
+      box-shadow: 0 12px 20px -6px var(--shadow-color);
+    }
+
+    .face-btn:active {
+      transform: translateY(-2px) scale(0.98);
+    }
+
+    .face-icon {
+      width: 44px;
+      height: 44px;
+      transition: transform 0.3s ease;
+    }
+
+    .face-btn:hover .face-icon {
+      transform: scale(1.15) rotate(4deg);
+    }
+
+    .face-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #64748b;
+      transition: color 0.25s ease;
+    }
+
+    .face-btn:hover .face-label {
+      color: var(--theme-color);
+    }
+
+    /* Color Themes per Sentiment */
+    .face-btn[data-value="1"] { --theme-color: #ef4444; --shadow-color: rgba(239, 68, 68, 0.25); }
+    .face-btn[data-value="2"] { --theme-color: #f97316; --shadow-color: rgba(249, 115, 22, 0.25); }
+    .face-btn[data-value="3"] { --theme-color: #eab308; --shadow-color: rgba(234, 179, 8, 0.25); }
+    .face-btn[data-value="4"] { --theme-color: #84cc16; --shadow-color: rgba(132, 204, 22, 0.25); }
+    .face-btn[data-value="5"] { --theme-color: #22c55e; --shadow-color: rgba(34, 197, 94, 0.25); }
+
+    /* Private Feedback Form */
+    .feedback-form {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      text-align: left;
+      opacity: 0;
+      transform: translateY(20px);
+      max-height: 0;
+      overflow: hidden;
+      transition: opacity 0.4s ease, transform 0.4s ease, max-height 0.4s ease;
+    }
+
+    .feedback-form.active {
+      opacity: 1;
+      transform: translateY(0);
+      max-height: 550px;
+      margin-top: 10px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 14px;
+      border: 1.5px solid #e2e8f0;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: #0f172a;
+      background-color: #f8fafc;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: #2563eb;
+      background-color: #ffffff;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 110px;
+    }
+
+    .btn-submit {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      padding: 16px 24px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+      transition: all 0.2s ease;
+      margin-top: 6px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .btn-submit:hover {
+      background: linear-gradient(135deg, #1d4ed8, #1e40af);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+    }
+
+    .btn-submit:active {
+      transform: translateY(0);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    /* Status Views (Redirecting & Success) */
+    .redirect-message, .success-message {
+      display: none;
+      opacity: 0;
+      transform: scale(0.92);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .redirect-message.active, .success-message.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      opacity: 1;
+      transform: scale(1);
+      padding: 10px 0;
+    }
+
+    .icon-circle {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .icon-circle.success {
+      background-color: #dcfce7;
+      color: #16a34a;
+      box-shadow: 0 10px 25px -5px rgba(22, 163, 74, 0.2);
+    }
+
+    .icon-circle.redirect {
+      background-color: #dbeafe;
+      color: #2563eb;
+      box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.2);
+    }
+
+    .spinner {
+      width: 28px;
+      height: 28px;
+      border: 3.5px solid rgba(37, 99, 235, 0.15);
+      border-top-color: #2563eb;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-top: 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="card" id="card">
+    <!-- Business Branding Header -->
+    <div class="brand-section">
+      <div class="brand-logo-wrapper" id="logoWrapper">
+        <svg class="brand-logo-fallback" id="logoFallback" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <img class="brand-logo" id="logoImg" src="" alt="Business Logo" style="display: none;">
+      </div>
+      <span class="brand-name" id="brandNameDisplay">YOUSAFZAI MART</span>
+    </div>
+
+    <!-- Main Headline & Subtitle -->
+    <h1 class="headline" id="headline">How did we do?</h1>
+    <p class="subheadline" id="subheadline">Please select the face that best describes your experience.</p>
+
+    <!-- Interactive Sentiment Faces -->
+    <div class="faces-wrapper" id="facesWrapper">
+      <div class="faces-container">
+        <!-- 1: Terrible -->
+        <button class="face-btn" data-value="1" aria-label="Terrible">
+          <svg class="face-icon" viewBox="0 0 64 64">
+            <circle cx="32" cy="32" r="30" fill="#ef4444"/>
+            <circle cx="20" cy="24" r="4" fill="#ffffff"/>
+            <circle cx="44" cy="24" r="4" fill="#ffffff"/>
+            <path d="M20 44 Q32 32 44 44" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+            <path d="M14 18 L24 22" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+            <path d="M50 18 L40 22" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <span class="face-label">Terrible</span>
+        </button>
+
+        <!-- 2: Bad -->
+        <button class="face-btn" data-value="2" aria-label="Bad">
+          <svg class="face-icon" viewBox="0 0 64 64">
+            <circle cx="32" cy="32" r="30" fill="#f97316"/>
+            <circle cx="22" cy="24" r="4" fill="#ffffff"/>
+            <circle cx="42" cy="24" r="4" fill="#ffffff"/>
+            <path d="M22 42 Q32 36 42 42" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+          <span class="face-label">Bad</span>
+        </button>
+
+        <!-- 3: Okay -->
+        <button class="face-btn" data-value="3" aria-label="Okay">
+          <svg class="face-icon" viewBox="0 0 64 64">
+            <circle cx="32" cy="32" r="30" fill="#eab308"/>
+            <circle cx="22" cy="24" r="4" fill="#ffffff"/>
+            <circle cx="42" cy="24" r="4" fill="#ffffff"/>
+            <line x1="22" y1="40" x2="42" y2="40" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+          <span class="face-label">Okay</span>
+        </button>
+
+        <!-- 4: Good -->
+        <button class="face-btn" data-value="4" aria-label="Good">
+          <svg class="face-icon" viewBox="0 0 64 64">
+            <circle cx="32" cy="32" r="30" fill="#84cc16"/>
+            <circle cx="22" cy="24" r="4" fill="#ffffff"/>
+            <circle cx="42" cy="24" r="4" fill="#ffffff"/>
+            <path d="M20 36 Q32 48 44 36" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+          <span class="face-label">Good</span>
+        </button>
+
+        <!-- 5: Great! -->
+        <button class="face-btn" data-value="5" aria-label="Great">
+          <svg class="face-icon" viewBox="0 0 64 64">
+            <circle cx="32" cy="32" r="30" fill="#22c55e"/>
+            <path d="M16 24 Q22 18 26 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+            <path d="M38 24 Q42 18 48 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+            <path d="M18 34 Q32 52 46 34 Z" fill="#ffffff"/>
+          </svg>
+          <span class="face-label">Great!</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Redirecting State (4-5 Rating) -->
+    <div class="redirect-message" id="redirectMessage">
+      <div class="icon-circle redirect">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9l6 6-6 6"/><path d="M4 4v7a4 4 0 0 0 4 4h12"/></svg>
+      </div>
+      <div class="spinner"></div>
+    </div>
+
+    <!-- Private Feedback Form (1-3 Rating) -->
+    <form class="feedback-form" id="feedbackForm">
+      <div class="form-group">
+        <label for="userName">Your Name</label>
+        <input type="text" id="userName" class="form-control" placeholder="John Doe" required>
+      </div>
+      <div class="form-group">
+        <label for="userEmail">Email Address or Phone</label>
+        <input type="text" id="userEmail" class="form-control" placeholder="john@example.com or +1234567890" required>
+      </div>
+      <div class="form-group">
+        <label for="userFeedback">How can we make it right?</label>
+        <textarea id="userFeedback" class="form-control" placeholder="Please share your feedback so management can address your concerns directly..." required></textarea>
+      </div>
+      <button type="submit" class="btn-submit" id="submitBtn">Send to Management</button>
+    </form>
+
+    <!-- Final Success Message -->
+    <div class="success-message" id="successMessage">
+      <div class="icon-circle success">
+        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <p style="color: #475569; font-size: 1rem; line-height: 1.6; font-weight: 500;">Thank you. Our management team has been notified and will reach out shortly.</p>
+    </div>
+  </main>
+
+  <script>
+    // ==========================================
+    // CONFIGURATION VARIABLES
+    // Edit your business info & webhook URLs here
+    // ==========================================
+    const BUSINESS_NAME = "Yousafzai Mart";
+    const BUSINESS_LOGO_URL = "yousafzai.webp"; // Local image or full web URL
+    
+    const YOUR_N8N_RATING_WEBHOOK_URL = "YOUR_N8N_RATING_WEBHOOK_URL";
+    const YOUR_N8N_FEEDBACK_WEBHOOK_URL = "YOUR_N8N_FEEDBACK_WEBHOOK_URL";
+    const YOUR_GOOGLE_REVIEW_LINK = "https://g.page/r/CT0AE2Fk_lATEAE/review";
+
+    // Application Logic
+    document.addEventListener('DOMContentLoaded', () => {
+      // 0. Parse URL Query Parameters for Smart Pre-filling
+      const urlParams = new URLSearchParams(window.location.search);
+      const prefillName = urlParams.get('name') || urlParams.get('firstName') || '';
+      const prefillEmail = urlParams.get('email') || urlParams.get('contact') || urlParams.get('phone') || '';
+      
+      const userNameInput = document.getElementById('userName');
+      const userEmailInput = document.getElementById('userEmail');
+
+      if (prefillName && userNameInput) userNameInput.value = prefillName;
+      if (prefillEmail && userEmailInput) userEmailInput.value = prefillEmail;
+
+      // Setup Business Branding
+      const brandNameDisplay = document.getElementById('brandNameDisplay');
+      const logoFallback = document.getElementById('logoFallback');
+      const logoImg = document.getElementById('logoImg');
+
+      if (BUSINESS_NAME) {
+        brandNameDisplay.textContent = BUSINESS_NAME;
+      }
+
+      if (BUSINESS_LOGO_URL) {
+        logoImg.src = BUSINESS_LOGO_URL;
+        logoImg.style.display = 'block';
+        logoFallback.style.display = 'none';
+        logoImg.onerror = () => {
+          logoImg.style.display = 'none';
+          logoFallback.style.display = 'block';
+        };
+      }
+
+      // Interaction Elements
+      const faceBtns = document.querySelectorAll('.face-btn');
+      const facesWrapper = document.getElementById('facesWrapper');
+      const headline = document.getElementById('headline');
+      const subheadline = document.getElementById('subheadline');
+      const redirectMessage = document.getElementById('redirectMessage');
+      const feedbackForm = document.getElementById('feedbackForm');
+      const successMessage = document.getElementById('successMessage');
+      const submitBtn = document.getElementById('submitBtn');
+
+      let selectedRating = 0;
+
+      // Attach Event Listeners to Face Buttons
+      faceBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          selectedRating = parseInt(btn.getAttribute('data-value'), 10);
+          handleRatingClick(selectedRating);
+        });
+      });
+
+      // Handle Sentiment Face Selection
+      function handleRatingClick(rating) {
+        // 1. Fire silent GET request in background to log click (if configured)
+        if (YOUR_N8N_RATING_WEBHOOK_URL && !YOUR_N8N_RATING_WEBHOOK_URL.includes("YOUR_N8N")) {
+          const ratingUrl = `${YOUR_N8N_RATING_WEBHOOK_URL}?stars=${rating}`;
+          fetch(ratingUrl, { method: 'GET', mode: 'no-cors' }).catch(err => {
+            console.log('Rating webhook log failed:', err);
+          });
+        }
+
+        // 2. Branch UI logic based on rating (4-5 vs 1-3)
+        if (rating >= 4) {
+          // 4 or 5: Happy Customer -> Google Review Redirect
+          facesWrapper.classList.add('hidden');
+          headline.textContent = "We're thrilled!";
+          subheadline.textContent = "Redirecting you to leave a review...";
+          redirectMessage.classList.add('active');
+
+          setTimeout(() => {
+            window.location.href = YOUR_GOOGLE_REVIEW_LINK;
+          }, 1500);
+        } else {
+          // 1, 2, or 3: Unhappy/Neutral -> Private Feedback Form
+          facesWrapper.classList.add('hidden');
+          headline.textContent = "We're sorry to hear that. How can we make it right?";
+          subheadline.style.display = 'none';
+          feedbackForm.classList.add('active');
+        }
+      }
+
+      // Handle Private Feedback Form Submission
+      feedbackForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+
+        const formData = {
+          businessName: BUSINESS_NAME,
+          stars: selectedRating,
+          rating: selectedRating,
+          name: document.getElementById('userName').value.trim(),
+          contact: document.getElementById('userEmail').value.trim(),
+          email: document.getElementById('userEmail').value.trim(),
+          feedback: document.getElementById('userFeedback').value.trim(),
+          timestamp: new Date().toISOString()
+        };
+
+        // Fire POST request to feedback webhook
+        if (YOUR_N8N_FEEDBACK_WEBHOOK_URL && !YOUR_N8N_FEEDBACK_WEBHOOK_URL.includes("YOUR_N8N")) {
+          fetch(YOUR_N8N_FEEDBACK_WEBHOOK_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+          })
+          .then(() => showSuccessUI())
+          .catch(err => {
+            console.error('Feedback submission error:', err);
+            showSuccessUI();
+          });
+        } else {
+          // If webhook is not connected yet, display success smoothly for testing
+          setTimeout(() => showSuccessUI(), 600);
+        }
+      });
+
+      function showSuccessUI() {
+        feedbackForm.classList.remove('active');
+        feedbackForm.style.display = 'none';
+        headline.style.display = 'none';
+        
+        successMessage.classList.add('active');
+      }
+    });
+  </script>
+</body>
+</html>
