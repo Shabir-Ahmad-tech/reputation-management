@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Customer Experience Feedback</title>
   <!-- Google Fonts: Poppins -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,7 +27,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 20px;
+      padding: 16px;
     }
 
     /* Main Card Container */
@@ -36,7 +36,7 @@
       width: 100%;
       max-width: 460px;
       border-radius: 28px;
-      padding: 44px 36px;
+      padding: 36px 28px;
       box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.03);
       text-align: center;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -49,14 +49,14 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 24px;
+      gap: 10px;
+      margin-bottom: 20px;
     }
 
     .brand-logo-wrapper {
-      width: 72px;
-      height: 72px;
-      border-radius: 20px;
+      width: 68px;
+      height: 68px;
+      border-radius: 18px;
       background: linear-gradient(135deg, #eff6ff, #dbeafe);
       display: flex;
       align-items: center;
@@ -73,13 +73,13 @@
     }
 
     .brand-logo-fallback {
-      width: 36px;
-      height: 36px;
+      width: 34px;
+      height: 34px;
       color: #2563eb;
     }
 
     .brand-name {
-      font-size: 1rem;
+      font-size: 0.925rem;
       font-weight: 600;
       color: #64748b;
       letter-spacing: 0.5px;
@@ -88,26 +88,26 @@
 
     /* Headlines */
     .headline {
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       font-weight: 700;
       color: #0f172a;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       line-height: 1.25;
       transition: opacity 0.3s ease, transform 0.3s ease;
     }
 
     .subheadline {
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       color: #64748b;
-      margin-bottom: 32px;
+      margin-bottom: 28px;
       font-weight: 400;
-      line-height: 1.5;
+      line-height: 1.45;
     }
 
     /* Interactive Sentiment Faces Component */
     .faces-wrapper {
       transition: opacity 0.35s ease, transform 0.35s ease, max-height 0.4s ease, margin 0.4s ease;
-      max-height: 140px;
+      max-height: 200px;
       opacity: 1;
     }
 
@@ -124,50 +124,56 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .face-btn {
       background: #f8fafc;
       border: 2px solid #f1f5f9;
-      border-radius: 20px;
-      padding: 12px 6px;
+      border-radius: 18px;
+      padding: 10px 4px;
       cursor: pointer;
       flex: 1;
+      min-width: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       outline: none;
       transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      -webkit-tap-highlight-color: transparent;
     }
 
     .face-btn:hover {
-      transform: translateY(-6px) scale(1.06);
+      transform: translateY(-4px) scale(1.04);
       background: #ffffff;
       border-color: var(--theme-color);
-      box-shadow: 0 12px 20px -6px var(--shadow-color);
+      box-shadow: 0 10px 18px -6px var(--shadow-color);
     }
 
     .face-btn:active {
-      transform: translateY(-2px) scale(0.98);
+      transform: translateY(-1px) scale(0.96);
     }
 
     .face-icon {
-      width: 44px;
-      height: 44px;
+      width: 40px;
+      height: 40px;
       transition: transform 0.3s ease;
     }
 
     .face-btn:hover .face-icon {
-      transform: scale(1.15) rotate(4deg);
+      transform: scale(1.1) rotate(4deg);
     }
 
     .face-label {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 600;
       color: #64748b;
       transition: color 0.25s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
     }
 
     .face-btn:hover .face-label {
@@ -185,7 +191,7 @@
     .feedback-form {
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 16px;
       text-align: left;
       opacity: 0;
       transform: translateY(20px);
@@ -197,7 +203,7 @@
     .feedback-form.active {
       opacity: 1;
       transform: translateY(0);
-      max-height: 550px;
+      max-height: 600px;
       margin-top: 10px;
     }
 
@@ -208,22 +214,23 @@
     }
 
     .form-group label {
-      font-size: 0.85rem;
+      font-size: 0.825rem;
       font-weight: 600;
       color: #334155;
     }
 
     .form-control {
       width: 100%;
-      padding: 14px 18px;
-      border-radius: 14px;
+      padding: 12px 16px;
+      border-radius: 12px;
       border: 1.5px solid #e2e8f0;
       font-family: inherit;
-      font-size: 0.95rem;
+      font-size: 0.925rem;
       color: #0f172a;
       background-color: #f8fafc;
       transition: all 0.2s ease;
       outline: none;
+      -webkit-appearance: none;
     }
 
     .form-control:focus {
@@ -234,25 +241,26 @@
 
     textarea.form-control {
       resize: vertical;
-      min-height: 110px;
+      min-height: 100px;
     }
 
     .btn-submit {
       background: linear-gradient(135deg, #2563eb, #1d4ed8);
       color: #ffffff;
       border: none;
-      border-radius: 14px;
-      padding: 16px 24px;
+      border-radius: 12px;
+      padding: 14px 20px;
       font-family: inherit;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 600;
       cursor: pointer;
       box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
       transition: all 0.2s ease;
-      margin-top: 6px;
+      margin-top: 4px;
       display: flex;
       justify-content: center;
       align-items: center;
+      width: 100%;
     }
 
     .btn-submit:hover {
@@ -288,13 +296,13 @@
     }
 
     .icon-circle {
-      width: 72px;
-      height: 72px;
+      width: 64px;
+      height: 64px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     .icon-circle.success {
@@ -310,17 +318,62 @@
     }
 
     .spinner {
-      width: 28px;
-      height: 28px;
-      border: 3.5px solid rgba(37, 99, 235, 0.15);
+      width: 26px;
+      height: 26px;
+      border: 3px solid rgba(37, 99, 235, 0.15);
       border-top-color: #2563eb;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
-      margin-top: 16px;
+      margin-top: 14px;
     }
 
     @keyframes spin {
       to { transform: rotate(360deg); }
+    }
+
+    /* 📱 Mobile Responsiveness Media Queries */
+    @media (max-width: 420px) {
+      body {
+        padding: 12px 10px;
+      }
+      .card {
+        padding: 28px 16px;
+        border-radius: 22px;
+      }
+      .headline {
+        font-size: 1.35rem;
+      }
+      .subheadline {
+        font-size: 0.85rem;
+        margin-bottom: 22px;
+      }
+      .faces-container {
+        gap: 4px;
+      }
+      .face-btn {
+        padding: 8px 2px;
+        border-radius: 14px;
+      }
+      .face-icon {
+        width: 34px;
+        height: 34px;
+      }
+      .face-label {
+        font-size: 0.65rem;
+      }
+      .form-control {
+        padding: 11px 14px;
+        font-size: 0.875rem;
+      }
+    }
+
+    @media (max-width: 340px) {
+      .face-label {
+        display: none;
+      }
+      .face-btn {
+        padding: 10px 2px;
+      }
     }
   </style>
 </head>
@@ -407,7 +460,7 @@
     <!-- Redirecting State (4-5 Rating) -->
     <div class="redirect-message" id="redirectMessage">
       <div class="icon-circle redirect">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9l6 6-6 6"/><path d="M4 4v7a4 4 0 0 0 4 4h12"/></svg>
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9l6 6-6 6"/><path d="M4 4v7a4 4 0 0 0 4 4h12"/></svg>
       </div>
       <div class="spinner"></div>
     </div>
@@ -432,9 +485,9 @@
     <!-- Final Success Message -->
     <div class="success-message" id="successMessage">
       <div class="icon-circle success">
-        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
       </div>
-      <p style="color: #475569; font-size: 1rem; line-height: 1.6; font-weight: 500;">Thank you. Our management team has been notified and will reach out shortly.</p>
+      <p style="color: #475569; font-size: 0.95rem; line-height: 1.6; font-weight: 500;">Thank you. Our management team has been notified and will reach out shortly.</p>
     </div>
   </main>
 
