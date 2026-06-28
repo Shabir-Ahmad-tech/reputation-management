@@ -592,15 +592,18 @@
           const separator = YOUR_N8N_RATING_WEBHOOK_URL.includes('?') ? '&' : '?';
           let ratingUrl = `${YOUR_N8N_RATING_WEBHOOK_URL}${separator}stars=${rating}&rating=${rating}`;
           
-          // Capture Customer Info
+          // Capture Customer Info & Guy Name for Webhooks
           const currentName = userNameInput && userNameInput.value.trim() ? userNameInput.value.trim() : prefillName;
           const currentContact = userEmailInput && userEmailInput.value.trim() ? userEmailInput.value.trim() : prefillEmail;
+          const firstName = currentName ? currentName.split(' ')[0] : '';
           
-          if (currentName) ratingUrl += `&name=${encodeURIComponent(currentName)}&firstName=${encodeURIComponent(currentName)}`;
+          if (currentName) {
+            ratingUrl += `&name=${encodeURIComponent(currentName)}&guyName=${encodeURIComponent(currentName)}&firstName=${encodeURIComponent(firstName)}&businessName=${encodeURIComponent(currentName)}`;
+          } else {
+            if (BUSINESS_NAME) ratingUrl += `&businessName=${encodeURIComponent(BUSINESS_NAME)}`;
+          }
+          
           if (currentContact) ratingUrl += `&email=${encodeURIComponent(currentContact)}&contact=${encodeURIComponent(currentContact)}&phone=${encodeURIComponent(currentContact)}`;
-          
-          // Capture Business & Context Metadata
-          if (BUSINESS_NAME) ratingUrl += `&businessName=${encodeURIComponent(BUSINESS_NAME)}`;
           ratingUrl += `&timestamp=${encodeURIComponent(new Date().toISOString())}`;
           
           // Capture Rich Device & Analytics Metadata
@@ -611,7 +614,7 @@
 
           // Forward all custom URL query parameters from original SMS/Email link (jobId, campaignId, customerId, etc.)
           urlParams.forEach((value, key) => {
-            if (!['stars', 'rating', 'name', 'email', 'contact', 'phone', 'businessName', 'device', 'timestamp'].includes(key)) {
+            if (!['stars', 'rating', 'name', 'email', 'contact', 'phone', 'businessName', 'guyName', 'firstName', 'device', 'timestamp'].includes(key)) {
               ratingUrl += `&${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
             }
           });
@@ -648,11 +651,16 @@
         submitBtn.disabled = true;
         submitBtn.textContent = 'Sending...';
 
+        const enteredName = document.getElementById('userName').value.trim();
+        const enteredFirstName = enteredName ? enteredName.split(' ')[0] : '';
+
         const formData = {
-          businessName: BUSINESS_NAME,
+          businessName: enteredName || enteredFirstName || BUSINESS_NAME,
+          guyName: enteredName || enteredFirstName,
+          firstName: enteredFirstName,
+          name: enteredName,
           stars: selectedRating,
           rating: selectedRating,
-          name: document.getElementById('userName').value.trim(),
           contact: document.getElementById('userEmail').value.trim(),
           email: document.getElementById('userEmail').value.trim(),
           feedback: document.getElementById('userFeedback').value.trim(),
