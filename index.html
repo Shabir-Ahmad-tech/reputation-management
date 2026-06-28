@@ -332,7 +332,7 @@
     }
 
     /* 📱 Mobile Responsiveness Media Queries */
-    @media (max-width: 420px) {
+    @media (max-width: 480px) {
       body {
         padding: 12px 10px;
       }
@@ -347,32 +347,51 @@
         font-size: 0.85rem;
         margin-bottom: 22px;
       }
+      .faces-wrapper {
+        max-height: 300px;
+      }
       .faces-container {
-        gap: 4px;
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 8px;
+      }
+      /* Top row: 4 & 5 stars (Good & Great!) */
+      .face-btn[data-value="4"] {
+        grid-row: 1;
+        grid-column: 1 / span 3;
+      }
+      .face-btn[data-value="5"] {
+        grid-row: 1;
+        grid-column: 4 / span 3;
+      }
+      /* Bottom row: 1, 2, 3 stars (Terrible, Bad, Okay) beneath 4-5 stars */
+      .face-btn[data-value="1"] {
+        grid-row: 2;
+        grid-column: 1 / span 2;
+      }
+      .face-btn[data-value="2"] {
+        grid-row: 2;
+        grid-column: 3 / span 2;
+      }
+      .face-btn[data-value="3"] {
+        grid-row: 2;
+        grid-column: 5 / span 2;
       }
       .face-btn {
-        padding: 8px 2px;
-        border-radius: 14px;
+        padding: 12px 4px;
+        border-radius: 16px;
       }
       .face-icon {
-        width: 34px;
-        height: 34px;
+        width: 38px;
+        height: 38px;
       }
       .face-label {
-        font-size: 0.65rem;
+        font-size: 0.725rem;
+        display: block;
       }
       .form-control {
         padding: 11px 14px;
         font-size: 0.875rem;
-      }
-    }
-
-    @media (max-width: 340px) {
-      .face-label {
-        display: none;
-      }
-      .face-btn {
-        padding: 10px 2px;
       }
     }
   </style>
