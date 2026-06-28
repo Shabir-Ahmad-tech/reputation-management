@@ -580,7 +580,14 @@
         // 1. Fire silent GET request in background to log click (if configured)
         if (YOUR_N8N_RATING_WEBHOOK_URL && !YOUR_N8N_RATING_WEBHOOK_URL.includes("YOUR_N8N")) {
           const separator = YOUR_N8N_RATING_WEBHOOK_URL.includes('?') ? '&' : '?';
-          const ratingUrl = `${YOUR_N8N_RATING_WEBHOOK_URL}${separator}stars=${rating}`;
+          let ratingUrl = `${YOUR_N8N_RATING_WEBHOOK_URL}${separator}stars=${rating}`;
+          
+          const currentName = userNameInput ? userNameInput.value.trim() : prefillName;
+          const currentContact = userEmailInput ? userEmailInput.value.trim() : prefillEmail;
+          
+          if (currentName) ratingUrl += `&name=${encodeURIComponent(currentName)}`;
+          if (currentContact) ratingUrl += `&email=${encodeURIComponent(currentContact)}&contact=${encodeURIComponent(currentContact)}`;
+          
           fetch(ratingUrl, { method: 'GET' }).catch(err => {
             console.log('Rating webhook log failed:', err);
           });
