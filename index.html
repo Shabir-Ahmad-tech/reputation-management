@@ -525,28 +525,47 @@
 
     // Application Logic
     document.addEventListener('DOMContentLoaded', () => {
-      // 0. Parse URL Query Parameters for Smart Pre-filling
+      // 0. DOM Elements
+      const userNameInput = document.getElementById('userName');
+      const userEmailInput = document.getElementById('userEmail');
+      const brandNameDisplay = document.getElementById('brandNameDisplay');
+      const logoFallback = document.getElementById('logoFallback');
+      const logoImg = document.getElementById('logoImg');
+      const headline = document.getElementById('headline');
+      const subheadline = document.getElementById('subheadline');
+      const faceBtns = document.querySelectorAll('.face-btn');
+      const facesWrapper = document.getElementById('facesWrapper');
+      const redirectMessage = document.getElementById('redirectMessage');
+      const feedbackForm = document.getElementById('feedbackForm');
+      const successMessage = document.getElementById('successMessage');
+      const submitBtn = document.getElementById('submitBtn');
+
+      // 1. Parse URL Query Parameters for Smart Pre-filling
       const urlParams = new URLSearchParams(window.location.search);
       const prefillName = urlParams.get('name') || urlParams.get('firstName') || '';
       const prefillEmail = urlParams.get('email') || urlParams.get('contact') || urlParams.get('phone') || '';
       
-      const userNameInput = document.getElementById('userName');
       if (prefillName && userNameInput) userNameInput.value = prefillName;
       if (prefillEmail && userEmailInput) userEmailInput.value = prefillEmail;
 
-      // Setup Business Branding beneath logo
-      const brandNameDisplay = document.getElementById('brandNameDisplay');
-      const logoFallback = document.getElementById('logoFallback');
-      const logoImg = document.getElementById('logoImg');
-
-      if (BUSINESS_NAME) {
+      // 2. Setup Business Branding beneath logo
+      if (BUSINESS_NAME && brandNameDisplay) {
         brandNameDisplay.textContent = BUSINESS_NAME.toUpperCase();
       }
 
-      // Personalize Main Headline with Customer First Name if available
-      const headline = document.getElementById('headline');
+      if (BUSINESS_LOGO_URL && logoImg && logoFallback) {
+        logoImg.src = BUSINESS_LOGO_URL;
+        logoImg.style.display = 'block';
+        logoFallback.style.display = 'none';
+        logoImg.onerror = () => {
+          logoImg.style.display = 'none';
+          logoFallback.style.display = 'block';
+        };
+      }
 
+      // 3. Personalize Main Headline with Customer First Name if available
       function updateCustomerHeadline() {
+        if (!headline) return;
         const fullName = userNameInput && userNameInput.value.trim() ? userNameInput.value.trim() : prefillName;
         if (fullName) {
           const firstName = fullName.split(' ')[0];
@@ -561,26 +580,6 @@
       if (userNameInput) {
         userNameInput.addEventListener('input', updateCustomerHeadline);
       }
-
-      if (BUSINESS_LOGO_URL) {
-        logoImg.src = BUSINESS_LOGO_URL;
-        logoImg.style.display = 'block';
-        logoFallback.style.display = 'none';
-        logoImg.onerror = () => {
-          logoImg.style.display = 'none';
-          logoFallback.style.display = 'block';
-        };
-      }
-
-      // Interaction Elements
-      const faceBtns = document.querySelectorAll('.face-btn');
-      const facesWrapper = document.getElementById('facesWrapper');
-      const headline = document.getElementById('headline');
-      const subheadline = document.getElementById('subheadline');
-      const redirectMessage = document.getElementById('redirectMessage');
-      const feedbackForm = document.getElementById('feedbackForm');
-      const successMessage = document.getElementById('successMessage');
-      const submitBtn = document.getElementById('submitBtn');
 
       let selectedRating = 0;
 
