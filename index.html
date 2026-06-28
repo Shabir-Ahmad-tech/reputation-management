@@ -408,7 +408,7 @@
         </svg>
         <img class="brand-logo" id="logoImg" src="" alt="Business Logo" style="display: none;">
       </div>
-      <span class="brand-name" id="brandNameDisplay">WELCOME</span>
+      <span class="brand-name" id="brandNameDisplay">YOUSAFZAI MART</span>
     </div>
 
     <!-- Main Headline & Subtitle -->
@@ -534,25 +534,32 @@
       if (prefillName && userNameInput) userNameInput.value = prefillName;
       if (prefillEmail && userEmailInput) userEmailInput.value = prefillEmail;
 
-      // Setup Customer Greeting Header (Displaying First Name instead of Business Name)
+      // Setup Business Branding beneath logo
       const brandNameDisplay = document.getElementById('brandNameDisplay');
       const logoFallback = document.getElementById('logoFallback');
       const logoImg = document.getElementById('logoImg');
 
-      function updateFirstNameDisplay() {
+      if (BUSINESS_NAME) {
+        brandNameDisplay.textContent = BUSINESS_NAME.toUpperCase();
+      }
+
+      // Personalize Main Headline with Customer First Name if available
+      const headline = document.getElementById('headline');
+
+      function updateCustomerHeadline() {
         const fullName = userNameInput && userNameInput.value.trim() ? userNameInput.value.trim() : prefillName;
         if (fullName) {
-          const firstName = fullName.split(' ')[0].toUpperCase();
-          brandNameDisplay.textContent = `HI ${firstName}!`;
+          const firstName = fullName.split(' ')[0];
+          headline.textContent = `Hi ${firstName}, how did we do?`;
         } else {
-          brandNameDisplay.textContent = "WELCOME!";
+          headline.textContent = "How did we do?";
         }
       }
 
-      updateFirstNameDisplay();
+      updateCustomerHeadline();
 
       if (userNameInput) {
-        userNameInput.addEventListener('input', updateFirstNameDisplay);
+        userNameInput.addEventListener('input', updateCustomerHeadline);
       }
 
       if (BUSINESS_LOGO_URL) {
