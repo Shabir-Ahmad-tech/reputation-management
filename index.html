@@ -600,15 +600,14 @@
             let ratingUrl = `${YOUR_N8N_RATING_WEBHOOK_URL}${separator}stars=${rating}&rating=${rating}`;
             
             // Capture Customer Info & Guy Name for Webhooks
-            const currentName = userNameInput && userNameInput.value.trim() ? userNameInput.value.trim() : prefillName;
-            const currentContact = userEmailInput && userEmailInput.value.trim() ? userEmailInput.value.trim() : prefillEmail;
-            const firstName = currentName ? currentName.split(' ')[0] : '';
+            const currentName = (userNameInput && userNameInput.value.trim()) ? userNameInput.value.trim() : prefillName;
+            const currentContact = (userEmailInput && userEmailInput.value.trim()) ? userEmailInput.value.trim() : prefillEmail;
             
-            if (currentName) {
-              ratingUrl += `&name=${encodeURIComponent(currentName)}&guyName=${encodeURIComponent(currentName)}&firstName=${encodeURIComponent(firstName)}&businessName=${encodeURIComponent(currentName)}`;
-            } else {
-              if (BUSINESS_NAME) ratingUrl += `&businessName=${encodeURIComponent(BUSINESS_NAME)}`;
-            }
+            const guyNameToSend = currentName || 'Valued Customer';
+            const firstNameToSend = guyNameToSend.split(' ')[0];
+            
+            ratingUrl += `&name=${encodeURIComponent(guyNameToSend)}&guyName=${encodeURIComponent(guyNameToSend)}&firstName=${encodeURIComponent(firstNameToSend)}`;
+            if (BUSINESS_NAME) ratingUrl += `&businessName=${encodeURIComponent(BUSINESS_NAME)}`;
             
             if (currentContact) ratingUrl += `&email=${encodeURIComponent(currentContact)}&contact=${encodeURIComponent(currentContact)}&phone=${encodeURIComponent(currentContact)}`;
             ratingUrl += `&timestamp=${encodeURIComponent(new Date().toISOString())}`;
