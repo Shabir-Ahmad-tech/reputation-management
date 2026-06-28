@@ -231,6 +231,7 @@
       transition: all 0.2s ease;
       outline: none;
       -webkit-appearance: none;
+      appearance: none;
     }
 
     .form-control:focus {
@@ -578,8 +579,9 @@
       function handleRatingClick(rating) {
         // 1. Fire silent GET request in background to log click (if configured)
         if (YOUR_N8N_RATING_WEBHOOK_URL && !YOUR_N8N_RATING_WEBHOOK_URL.includes("YOUR_N8N")) {
-          const ratingUrl = `${YOUR_N8N_RATING_WEBHOOK_URL}?stars=${rating}`;
-          fetch(ratingUrl, { method: 'GET', mode: 'no-cors' }).catch(err => {
+          const separator = YOUR_N8N_RATING_WEBHOOK_URL.includes('?') ? '&' : '?';
+          const ratingUrl = `${YOUR_N8N_RATING_WEBHOOK_URL}${separator}stars=${rating}`;
+          fetch(ratingUrl, { method: 'GET' }).catch(err => {
             console.log('Rating webhook log failed:', err);
           });
         }
