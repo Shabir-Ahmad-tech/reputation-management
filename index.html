@@ -587,41 +587,46 @@
 
       // Handle Sentiment Face Selection
       function handleRatingClick(rating) {
-        // 1. Fire silent GET request in background to log click (if configured)
-        if (YOUR_N8N_RATING_WEBHOOK_URL && !YOUR_N8N_RATING_WEBHOOK_URL.includes("YOUR_N8N")) {
-          const separator = YOUR_N8N_RATING_WEBHOOK_URL.includes('?') ? '&' : '?';
-          let ratingUrl = `${YOUR_N8N_RATING_WEBHOOK_URL}${separator}stars=${rating}&rating=${rating}`;
-          
-          // Capture Customer Info & Guy Name for Webhooks
-          const currentName = userNameInput && userNameInput.value.trim() ? userNameInput.value.trim() : prefillName;
-          const currentContact = userEmailInput && userEmailInput.value.trim() ? userEmailInput.value.trim() : prefillEmail;
-          const firstName = currentName ? currentName.split(' ')[0] : '';
-          
-          if (currentName) {
-            ratingUrl += `&name=${encodeURIComponent(currentName)}&guyName=${encodeURIComponent(currentName)}&firstName=${encodeURIComponent(firstName)}&businessName=${encodeURIComponent(currentName)}`;
-          } else {
-            if (BUSINESS_NAME) ratingUrl += `&businessName=${encodeURIComponent(BUSINESS_NAME)}`;
-          }
-          
-          if (currentContact) ratingUrl += `&email=${encodeURIComponent(currentContact)}&contact=${encodeURIComponent(currentContact)}&phone=${encodeURIComponent(currentContact)}`;
-          ratingUrl += `&timestamp=${encodeURIComponent(new Date().toISOString())}`;
-          
-          // Capture Rich Device & Analytics Metadata
-          const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-          ratingUrl += `&device=${encodeURIComponent(isMobile ? 'Mobile' : 'Desktop')}`;
-          ratingUrl += `&screen=${encodeURIComponent(window.innerWidth + 'x' + window.innerHeight)}`;
-          ratingUrl += `&lang=${encodeURIComponent(navigator.language || 'en')}`;
-
-          // Forward all custom URL query parameters from original SMS/Email link (jobId, campaignId, customerId, etc.)
-          urlParams.forEach((value, key) => {
-            if (!['stars', 'rating', 'name', 'email', 'contact', 'phone', 'businessName', 'guyName', 'firstName', 'device', 'timestamp'].includes(key)) {
-              ratingUrl += `&${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+        // 1. Fire silent GET request in background to log click (isolated in try...catch)
+        try {
+          if (YOUR_N8N_RATING_WEBHOOK_URL && !YOUR_N8N_RATING_WEBHOOK_URL.includes("YOUR_N8N")) {
+            const separator = YOUR_N8N_RATING_WEBHOOK_URL.includes('?') ? '&' : '?';
+            let ratingUrl = `${YOUR_N8N_RATING_WEBHOOK_URL}${separator}stars=${rating}&rating=${rating}`;
+            
+            // Capture Customer Info & Guy Name for Webhooks
+            const currentName = userNameInput && userNameInput.value.trim() ? userNameInput.value.trim() : prefillName;
+            const currentContact = userEmailInput && userEmailInput.value.trim() ? userEmailInput.value.trim() : prefillEmail;
+            const firstName = currentName ? currentName.split(' ')[0] : '';
+            
+            if (currentName) {
+              ratingUrl += `&name=${encodeURIComponent(currentName)}&guyName=${encodeURIComponent(currentName)}&firstName=${encodeURIComponent(firstName)}&businessName=${encodeURIComponent(currentName)}`;
+            } else {
+              if (BUSINESS_NAME) ratingUrl += `&businessName=${encodeURIComponent(BUSINESS_NAME)}`;
             }
-          });
-          
-          fetch(ratingUrl, { method: 'GET' }).catch(err => {
-            console.log('Rating webhook log failed:', err);
-          });
+            
+            if (currentContact) ratingUrl += `&email=${encodeURIComponent(currentContact)}&contact=${encodeURIComponent(currentContact)}&phone=${encodeURIComponent(currentContact)}`;
+            ratingUrl += `&timestamp=${encodeURIComponent(new Date().toISOString())}`;
+            
+            // Capture Rich Device & Analytics Metadata
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            ratingUrl += `&device=${encodeURIComponent(isMobile ? 'Mobile' : 'Desktop')}`;
+            ratingUrl += `&screen=${encodeURIComponent(window.innerWidth + 'x' + window.innerHeight)}`;
+            ratingUrl += `&lang=${encodeURIComponent(navigator.language || 'en')}`;
+
+            // Forward all custom URL query parameters
+            urlParams.forEach((value, key) => {
+              if (!['stars', 'rating', 'name', 'email', 'contact', 'phone', 'businessName', 'guyName', 'firstName', 'device', 'timestamp'].includes(key)) {
+                ratingUrl += `&${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+              }
+            });
+            
+            // Use no-cors mode so browser never blocks background dispatch
+            fetch(ratingUrl, { method: 'GET', mode: 'no-cors' }).catch(err => {
+              console.log('Rating webhook log failed:', err);
+            });
+          }
+        } catch (err) {
+          console.warn("Background webhook error ignored:", err);
         }
 
         // 2. Branch UI logic based on rating (4-5 vs 1-3)
